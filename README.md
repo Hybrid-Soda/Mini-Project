@@ -1,3 +1,3 @@
 # Short Project
 
-- Be careful the secure..
+- Be careful the security..
