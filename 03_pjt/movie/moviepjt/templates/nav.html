@@ -1,0 +1,30 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'index' %}">
+      <img src="{% static 'images/logo.png' %}" alt="logo" height="40">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon text-end"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'index' %}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'community' %}">Community</a>
+        </li>
+        <li class="nav-item">
+          <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Login
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="modal fade" id="exampleModal" tabindex="-1">
+  {% include "modal.html" %}
+</div>
