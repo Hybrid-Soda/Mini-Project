@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>DETAIL PAGE</h1>
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">{{ movie.title }}</h5>
+    <p class="card-text">{{ movie.description }}</p>
+  </div>
+</div>
+<hr>
+
+<h3>댓글 목록</h3>
+{% if movie.comment_set.all %}
+  {% for comment in movie.comment_set.all %}
+    <div class="d-flex justify-content-between">
+      <p>{{ comment.content }}</p>
+      <p>작성자 : <a href="{% url "accounts:profile" comment.user.pk %}">{{ comment.user.username }}</a></p>
+    </div>
+  {% endfor %}
+{% else %}
+  <p>아직 댓글이 없네요..</p>
+{% endif %}
+<hr>
+
+<form action="{% url "movies:comments_create" movie.pk %}" method="POST">
+  {% csrf_token %}
+  {{ form }}
+  <input type="submit" value="submit">
+</form>
+
+
+<a href="{% url "movies:index" %}">BACK</a>
+{% endblock content %}

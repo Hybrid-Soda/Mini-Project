@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Create</h1>
+<form aciton="{% url 'movies:create' %}" method='POST'>
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type='submit' class='btn btn-light'>제출</button>
+</form>
+{% endblock content %}
+
+
+
