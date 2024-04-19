@@ -4,20 +4,20 @@
 <h1>INDEX PAGE</h1>
 {% if movies|length == 0 %} 아직 게시글이 없습니다
 {% else %}
-<div class="row g-3">
+<div class="row g-3 m-0">
 {% for movie in movies %}
 <div class="card col-6 p-0">
   <h5 class="card-header">{{ movie.title }}</h5>
-  <div class="card-body">
-    <p class="card-text">
-      <a href="{% url 'movies:detail' movie.user.pk %}">DETAIL</a>
+  <div class="card-body d-flex">
+    <p class="card-text me-3 my-0">
+      <a href="{% url 'movies:detail' movie.user.pk %}" class="btn btn-outline-warning">DETAIL</a>
     </p>
+    <form action="{% url 'movies:likes' movie.pk %}" method='POST'>
+      {% csrf_token %}
+        <input type='submit' value='LIKE' class="btn btn-outline-info">
+    </form>
   </div>
 </div>
-{% comment %} <form action="{% url 'movies:likes' movie.pk %}" method='POST'>
-  {% csrf_token %}
-    <input type='submit' value='좋아요'>
-</form> {% endcomment %}
 {% endfor %}
 </div>
 {% endif %}

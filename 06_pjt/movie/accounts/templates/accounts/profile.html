@@ -37,7 +37,7 @@
     {% if user.like_movies.all %}
       {% for movie in user.like_movies.all %}
         <li>
-          <a href="{% url "movies:detail" movie_pk %}">{{ movie.title }}</a>
+          <a href="{% url "movies:detail" movie.pk %}">{{ movie.title }}</a>
         </li>
       {% endfor %}
     {% else %}

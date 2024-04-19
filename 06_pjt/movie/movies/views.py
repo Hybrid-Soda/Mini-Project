@@ -37,8 +37,8 @@ def create(request):
     return render(request, 'movies/create.html', context)
 
 @login_required
-def update(request, user_pk):
-    movie = Movie.objects.get(pk=user_pk)
+def update(request, movie_pk):
+    movie = Movie.objects.get(pk=movie_pk)
     if request.method == 'POST':
         form = MovieForm(request.POST, instance=movie)
         if form.is_valid():
@@ -53,9 +53,10 @@ def update(request, user_pk):
     return render(request, 'movies/update.html', context)
 
 @login_required
-def delete(request, user_pk):
-    movie = Movie.objects.get(pk=user_pk)
-    movie.delete()
+def delete(request, movie_pk):
+    if request.method == 'POST':
+        movie = Movie.objects.get(pk=movie_pk)
+        movie.delete()
     return redirect('movies:index')
 
 @login_required
@@ -70,5 +71,18 @@ def comments_create(request, movie_pk):
             comment.save()
             return redirect('movies:detail', movie.pk)
 
+@login_required
 def comments_delete(request, movie_pk, comment_pk):
-    pass
+    comment = get_object_or_404(Comment, pk=comment_pk)
+    if request.user == comment.user:
+        comment.delete()
+        return redirect('movies:detail', movie_pk)
+
+@login_required
+def likes(request, movie_pk):
+    movie = get_object_or_404(Movie, pk=movie_pk)
+    if request.user in movie.like_users.all():
+        movie.like_users.remove(request.user)
+    else:
+        movie.like_users.add(request.user)
+    return redirect('movies:index')
