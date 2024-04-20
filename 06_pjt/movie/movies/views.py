@@ -12,11 +12,13 @@ def index(request):
     return render(request, 'movies/index.html', context)
 
 def detail(request, movie_pk):
-    movie = Movie.objects.get(pk=movie_pk)
+    movie = get_object_or_404(Movie, pk=movie_pk)
+    comments = movie.comment_set.all()
     form = CommentForm()
     context= {
         'movie': movie,
         'form': form,
+        'comments': comments
     }
     return render(request, 'movies/detail.html', context)
 
@@ -86,3 +88,15 @@ def likes(request, movie_pk):
     else:
         movie.like_users.add(request.user)
     return redirect('movies:index')
+
+@login_required
+def create_reply(request, comment_pk):
+    comment = get_object_or_404(Comment, pk=comment_pk)
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        reply_comment = form.save(commit=False)
+        reply_comment.user = request.user
+        reply_comment.movie = comment.movie
+        reply_comment.parent_comment = comment
+        reply_comment.save()
+        return redirect('movies:detail', comment.movie.pk)

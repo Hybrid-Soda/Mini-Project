@@ -11,20 +11,45 @@
 <hr>
 
 <h3>댓글 목록</h3>
-{% if movie.comment_set.all %}
-  {% for comment in movie.comment_set.all %}
-    <div class="d-flex justify-content-between align-items-center p-2 border">
-      <p class="m-0">{{ comment.content }}</p>
-      <div class="d-flex">
-        <p class="m-0 me-3">작성자 : <a href="{% url "accounts:profile" comment.user.pk %}">{{ comment.user.username }}</a></p>
-        {% if comment.user == request.user %}
-          <form action="{% url "movies:comments_delete" movie.pk comment.pk %}" method="POST">
-            {% csrf_token %}
-            <input type="submit" value="DELETE" style="font-size:10px;" class="btn btn-outline-danger">
-          </form>
-        {% endif %}
+{% if comments %}
+  {% for comment in comments %}
+    {% if comment.parent_comment is Null %}
+    <div class="p-2 border">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="m-0">{{ comment.content }}</p>
+        <div class="d-flex">
+          <p class="m-0 me-3">작성자 : <a href="{% url "accounts:profile" comment.user.pk %}">{{ comment.user.username }}</a></p>
+          {% if comment.user == request.user %}
+            <form action="{% url "movies:comments_delete" movie.pk comment.pk %}" method="POST">
+              {% csrf_token %}
+              <input type="submit" value="DELETE" style="font-size:10px;" class="btn btn-outline-danger">
+            </form>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="p-2 border">
+        <ul style="font-size:13px;">
+          {% for reply in comment.child_comment.all %}
+            <div class="d-flex my-2">
+              <li>{{ reply.content }}</li>
+              {% if reply.user == request.user %}
+                <form action="{% url "movies:comments_delete" movie.pk reply.pk %}" method="POST">
+                  {% csrf_token %}
+                  <input type="submit" value="DELETE" style="font-size:6px;" class="btn btn-outline-danger ms-3">
+                </form>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </ul>
+        <form action="{% url "movies:create_reply" comment.pk %}" method="POST" class="d-flex">
+          {% csrf_token %}
+          {{ form }}
+          <input type="submit" value="SUBMIT" class="btn btn-outline-success justify-content-end ms-3">
+        </form>
       </div>
     </div>
+    {% endif %}
   {% endfor %}
 {% else %}
   <p>아직 댓글이 없네요..</p>
